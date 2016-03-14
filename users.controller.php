@@ -27,19 +27,23 @@ class UsersController extends Controller{
     }
 
     public function registration(){
-        if ($_POST && isset($_POST['login']) && isset($_POST['password']) && isset($_POST['email']) && $_POST['password'] == $_POST['password_confirmation']){
-            $login = trim($_POST['login']);
-            $email = trim($_POST['email']);
-            $password = md5(Config::get('salt') . trim($_POST['password']));
-            $new_user = $this->model->register($login, $email, $password);
-            if ($new_user){
-                Session::setFlash('User with login: ' . $login . ' or email: ' . $email .  ' is already exist.');
-            } else {
-                Session::setFlash('User with login: ' . $login . ' with email' . $email .  ' was created.');
-            }
+        if ($_POST && isset($_POST['login']) && isset($_POST['password']) && isset($_POST['email']) && $_POST['password'] && $_POST['password_confirmation']){
+        	if($_POST['password'] == $_POST['password_confirmation']){
+			$login = trim($_POST['login']);
+			$email = trim($_POST['email']);
+			$password = md5(Config::get('salt') . trim($_POST['password']));
+			$new_user = $this->model->register($login, $email, $password);
+			if ($new_user){
+		                Session::setFlash('User with login: ' . $login . ' or email: ' . $email .  ' is already exist.');
+		            } else {
+		                Session::setFlash('User with login: ' . $login . ' with email' . $email .  ' was created.');
+		        }
+        	}else{
+        		Session::setFlash('Passwords is not identical');
+        	}
         } else{
-			Session::setFlash('Password do not much!');
-		}
+		Session::setFlash('Please, fill in all the fields!');
+	}
     }
 
     public function recovery(){
